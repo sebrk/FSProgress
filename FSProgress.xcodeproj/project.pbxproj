@@ -63,9 +63,6 @@
 		9E547B8319814EE400B017FA /* FSProgress-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FSProgress-Prefix.pch"; sourceTree = "<group>"; };
 		9E547B8D19814EE400B017FA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		9E547B9019814EE400B017FA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		9E547B9719814EE400B017FA /* FSProgressTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FSProgressTests-Info.plist"; sourceTree = "<group>"; };
-		9E547B9919814EE400B017FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		9E547B9B19814EE400B017FA /* FSProgressTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSProgressTests.m; sourceTree = "<group>"; };
 		9E547BA519814F1F00B017FA /* FSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSData.h; sourceTree = "<group>"; };
 		9E547BA619814F1F00B017FA /* FSMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMutableArray.h; sourceTree = "<group>"; };
 		9E547BA719814F1F00B017FA /* FSMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMutableArray.m; sourceTree = "<group>"; };
@@ -92,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				9E547B8119814EE400B017FA /* FSProgress */,
-				9E547B9519814EE400B017FA /* FSProgressTests */,
 				9E547B7E19814EE400B017FA /* Frameworks */,
 				9E547B7D19814EE400B017FA /* Products */,
 			);
@@ -136,24 +132,6 @@
 			children = (
 				9E547B8319814EE400B017FA /* FSProgress-Prefix.pch */,
 				9E547BB019814F4800B017FA /* Media.xcassets */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		9E547B9519814EE400B017FA /* FSProgressTests */ = {
-			isa = PBXGroup;
-			children = (
-				9E547B9B19814EE400B017FA /* FSProgressTests.m */,
-				9E547B9619814EE400B017FA /* Supporting Files */,
-			);
-			path = FSProgressTests;
-			sourceTree = "<group>";
-		};
-		9E547B9619814EE400B017FA /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				9E547B9719814EE400B017FA /* FSProgressTests-Info.plist */,
-				9E547B9819814EE400B017FA /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -217,7 +195,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm  -rf \"${TARGET_BUILD_DIR}/../FSProgress/\"\n\nxcrun agvtool next-version -all\nxcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphonesimulator -configuration Debug\nxcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphoneos -configuration Debug\n\n# make a new output folder\nmkdir -p ${TARGET_BUILD_DIR}/../FSProgress\n\n# combine lib files for various platforms into one\nlipo -create \"${TARGET_BUILD_DIR}/../Debug-iphoneos/libFSProgress.a\" \"${TARGET_BUILD_DIR}/../Debug-iphonesimulator/libFSProgress.a\" -output \"${TARGET_BUILD_DIR}/../FSProgress/libFSProgress-debug-${CURRENT_PROJECT_VERSION}.a\"";
+			shellScript = "rm  -rf \"${TARGET_BUILD_DIR}/../FSProgress/\"\n\nxcrun agvtool next-version -all\nxcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphonesimulator -configuration Debug\nxcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphoneos -configuration Debug\n\n# make a new output folder\nmkdir -p ${TARGET_BUILD_DIR}/../FSProgress\n\n# combine lib files for various platforms into one\nlipo -create \"${TARGET_BUILD_DIR}/../Debug-iphoneos/libFSProgress.a\" \"${TARGET_BUILD_DIR}/../Debug-iphonesimulator/libFSProgress.a\" -output \"${TARGET_BUILD_DIR}/../FSProgress/libFSProgress.a\"\n\nopen \"${TARGET_BUILD_DIR}/../FSProgress/\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -234,22 +212,11 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		9E547B9819814EE400B017FA /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9E547B9919814EE400B017FA /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		9E49E78319815460005FC572 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 36;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -259,7 +226,7 @@
 		9E49E78419815460005FC572 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 36;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
