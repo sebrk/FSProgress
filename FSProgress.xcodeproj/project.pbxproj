@@ -12,9 +12,10 @@
 			buildConfigurationList = 9E49E78219815460005FC572 /* Build configuration list for PBXAggregateTarget "Aggregated Lib" */;
 			buildPhases = (
 				9E49E78619815487005FC572 /* ShellScript */,
-				9E49E78519815485005FC572 /* CopyFiles */,
+				9E08D30A199A391A00F618E7 /* ShellScript */,
 			);
 			dependencies = (
+				9E08D309199A38EA00F618E7 /* PBXTargetDependency */,
 			);
 			name = "Aggregated Lib";
 			productName = "Aggregated Lib";
@@ -22,45 +23,47 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		9E49E780198152B7005FC572 /* FSServiceActivityView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BAA19814F1F00B017FA /* FSServiceActivityView.h */; };
-		9E49E78719815533005FC572 /* FSData.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BA519814F1F00B017FA /* FSData.h */; };
-		9E49E78819815533005FC572 /* FSServiceActivityView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BAA19814F1F00B017FA /* FSServiceActivityView.h */; };
+		9E08D2FF199A36A100F618E7 /* FSData.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E547BA519814F1F00B017FA /* FSData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9E08D300199A36C700F618E7 /* FSProgress.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E08D2FA199A356600F618E7 /* FSProgress.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9E08D301199A36F300F618E7 /* FSServiceActivityView.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E547BAA19814F1F00B017FA /* FSServiceActivityView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9E08D302199A370100F618E7 /* FSOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E547BA819814F1F00B017FA /* FSOrderedDictionary.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		9E08D303199A370500F618E7 /* FSMutableArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E547BA619814F1F00B017FA /* FSMutableArray.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		9E08D30C199A457800F618E7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E08D30B199A457800F618E7 /* AudioToolbox.framework */; };
 		9E547B8019814EE400B017FA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E547B7F19814EE400B017FA /* Foundation.framework */; };
 		9E547BAC19814F1F00B017FA /* FSMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E547BA719814F1F00B017FA /* FSMutableArray.m */; };
 		9E547BAD19814F1F00B017FA /* FSOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E547BA919814F1F00B017FA /* FSOrderedDictionary.m */; };
 		9E547BAE19814F1F00B017FA /* FSServiceActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E547BAB19814F1F00B017FA /* FSServiceActivityView.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		9E49E78519815485005FC572 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "${TARGET_BUILD_DIR}/../FSProgress";
-			dstSubfolderSpec = 0;
-			files = (
-				9E49E78719815533005FC572 /* FSData.h in CopyFiles */,
-				9E49E78819815533005FC572 /* FSServiceActivityView.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
+/* Begin PBXContainerItemProxy section */
+		9E08D308199A38EA00F618E7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9E547B7419814EE400B017FA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9E547B7B19814EE400B017FA;
+			remoteInfo = FSProgress;
 		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
 		9E547B7A19814EE400B017FA /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				9E49E780198152B7005FC572 /* FSServiceActivityView.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9E08D2FA199A356600F618E7 /* FSProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSProgress.h; sourceTree = "<group>"; };
+		9E08D30B199A457800F618E7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9E547B7C19814EE400B017FA /* libFSProgress.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFSProgress.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E547B7F19814EE400B017FA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9E547B8319814EE400B017FA /* FSProgress-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FSProgress-Prefix.pch"; sourceTree = "<group>"; };
 		9E547B8D19814EE400B017FA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		9E547B9019814EE400B017FA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		9E547BA519814F1F00B017FA /* FSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSData.h; sourceTree = "<group>"; };
 		9E547BA619814F1F00B017FA /* FSMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSMutableArray.h; sourceTree = "<group>"; };
 		9E547BA719814F1F00B017FA /* FSMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSMutableArray.m; sourceTree = "<group>"; };
@@ -76,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E08D30C199A457800F618E7 /* AudioToolbox.framework in Frameworks */,
 				9E547B8019814EE400B017FA /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -103,9 +107,9 @@
 		9E547B7E19814EE400B017FA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9E08D30B199A457800F618E7 /* AudioToolbox.framework */,
 				9E547B7F19814EE400B017FA /* Foundation.framework */,
 				9E547B8D19814EE400B017FA /* XCTest.framework */,
-				9E547B9019814EE400B017FA /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -113,6 +117,7 @@
 		9E547B8119814EE400B017FA /* FSProgress */ = {
 			isa = PBXGroup;
 			children = (
+				9E08D2FA199A356600F618E7 /* FSProgress.h */,
 				9E547BA519814F1F00B017FA /* FSData.h */,
 				9E547BA619814F1F00B017FA /* FSMutableArray.h */,
 				9E547BA719814F1F00B017FA /* FSMutableArray.m */,
@@ -136,6 +141,21 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		9E08D2FD199A366D00F618E7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9E08D2FF199A36A100F618E7 /* FSData.h in Headers */,
+				9E08D300199A36C700F618E7 /* FSProgress.h in Headers */,
+				9E08D301199A36F300F618E7 /* FSServiceActivityView.h in Headers */,
+				9E08D302199A370100F618E7 /* FSOrderedDictionary.h in Headers */,
+				9E08D303199A370500F618E7 /* FSMutableArray.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		9E547B7B19814EE400B017FA /* FSProgress */ = {
 			isa = PBXNativeTarget;
@@ -144,6 +164,9 @@
 				9E547B7819814EE400B017FA /* Sources */,
 				9E547B7919814EE400B017FA /* Frameworks */,
 				9E547B7A19814EE400B017FA /* CopyFiles */,
+				9E08D2FD199A366D00F618E7 /* Headers */,
+				9E08D304199A37B600F618E7 /* ShellScript */,
+				9E08D307199A38B300F618E7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -182,6 +205,45 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		9E08D304199A37B600F618E7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"\n\n# Link the \"Current\" version to \"A\"\n/bin/ln -sfh A \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/Current\"\n/bin/ln -sfh Versions/Current/Headers \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers\"\n/bin/ln -sfh \"Versions/Current/${PRODUCT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/${PRODUCT_NAME}\"\n\n# The -a ensures that the headers maintain the source modification date so that we don't constantly\n# cause propagating rebuilds of files that import these headers.\n/bin/cp -a \"${TARGET_BUILD_DIR}/${PUBLIC_HEADERS_FOLDER_PATH}/\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"";
+		};
+		9E08D307199A38B300F618E7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
+		9E08D30A199A391A00F618E7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=${PROJECT_NAME}\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nxcrun lipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/A/${SF_TARGET_NAME}\"\n";
+		};
 		9E49E78619815487005FC572 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,7 +255,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm  -rf \"${TARGET_BUILD_DIR}/../FSProgress/\"\n\nxcrun agvtool next-version -all\nxcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphonesimulator -configuration Debug\nxcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphoneos -configuration Debug\n\n# make a new output folder\nmkdir -p ${TARGET_BUILD_DIR}/../FSProgress\n\n# combine lib files for various platforms into one\nlipo -create \"${TARGET_BUILD_DIR}/../Debug-iphoneos/libFSProgress.a\" \"${TARGET_BUILD_DIR}/../Debug-iphonesimulator/libFSProgress.a\" -output \"${TARGET_BUILD_DIR}/../FSProgress/libFSProgress.a\"\n\nopen \"${TARGET_BUILD_DIR}/../FSProgress/\"";
+			shellScript = "#rm  -rf \"${TARGET_BUILD_DIR}/../FSProgress/\"\n#\n#xcrun agvtool next-version -all\n#xcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphonesimulator -configuration Debug\n#xcodebuild -workspace FSProgress.xcworkspace -scheme FSProgress -sdk iphoneos -configuration Debug\n\n# make a new output folder\n#mkdir -p ${TARGET_BUILD_DIR}/../FSProgress\n\n# combine lib files for various platforms into one\n#lipo -create \"${TARGET_BUILD_DIR}/../Debug-iphoneos/libFSProgress.a\" \"${TARGET_BUILD_DIR}/../Debug-iphonesimulator/libFSProgress.a\" -output \"${TARGET_BUILD_DIR}/../FSProgress/libFSProgress.a\"\n\n#open \"${TARGET_BUILD_DIR}/../FSProgress/\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -210,11 +272,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		9E08D309199A38EA00F618E7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9E547B7B19814EE400B017FA /* FSProgress */;
+			targetProxy = 9E08D308199A38EA00F618E7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		9E49E78319815460005FC572 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 50;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -224,7 +294,7 @@
 		9E49E78419815460005FC572 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 50;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -302,6 +372,7 @@
 		9E547BA019814EE400B017FA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/FSProgress.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FSProgress/FSProgress-Prefix.pch";
@@ -309,13 +380,17 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)Headers";
 				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
 			};
 			name = Debug;
 		};
 		9E547BA119814EE400B017FA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/FSProgress.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FSProgress/FSProgress-Prefix.pch";
@@ -323,7 +398,9 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)Headers";
 				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
 			};
 			name = Release;
 		};

@@ -11,6 +11,7 @@
 #define kSERVICE_DISPLAY_TIME 5.0f
 #define kPROGRESS_BAR_HEIGHT 3.0f
 
+#import <AudioToolbox/AudioToolbox.h> 
 #import "FSServiceActivityView.h"
 #import "FSOrderedDictionary.h"
 #import "FSData.h"
@@ -348,6 +349,15 @@
                             _closeButton.hidden = YES;
                         }
 
+                        if (data.useHaptic)
+                        {
+                            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                        }
+                        if (data.useSound)
+                        {
+                            AudioServicesPlaySystemSound(1109);
+                        }
+                        
                         [self updateProgressBarWithStep:data.aCurrentStep andMaxSteps:data.aMaxSteps];
                         [self updateAndAnimateTitle:data.aTitle];
                     }
@@ -371,6 +381,16 @@
                         }
                         
                         _closeButton.hidden = NO;
+                        
+                        if (data.useHaptic)
+                        {
+                            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                        }
+                        if (data.useSound)
+                        {
+                            AudioServicesPlaySystemSound(1109);
+                        }
+                        
                         [self updateProgressBarWithStep:0 andMaxSteps:0];
                         [self updateAndAnimateTitle:data.aTitle];
                         
