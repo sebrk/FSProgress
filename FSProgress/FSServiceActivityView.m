@@ -9,10 +9,11 @@
 #define kSERVICE_INDICATOR_HEIGHT 40.0f
 #define kSERVICE_INDICATOR_HEIGHT_FAILURE 80.0f
 #define kSERVICE_DISPLAY_TIME 5.0f
+#define kPROGRESS_BAR_HEIGHT 3.0f
 
 #import "FSServiceActivityView.h"
-#import "FSData.h"
 #import "FSOrderedDictionary.h"
+#import "FSData.h"
 
 @interface FSServiceActivityView () <FSMutableArrayDelegate>
 {
@@ -20,13 +21,15 @@
     UIImageView *progressBarView;
     UILabel *readMoreLabel;
     
-    int activeObject;
-    NSNumber *activeService;
-    BOOL isRunning;
-    BOOL paused;
     CGRect origStatusFrame;
     CGRect origFrame;
     float padding;
+    
+    int activeObject;
+    NSNumber *activeService;
+    
+    BOOL isRunning;
+    BOOL paused;
 }
 
 @property (nonatomic, strong) UIViewController *rootViewController;
@@ -103,17 +106,28 @@
 
     float height = CGRectGetHeight(self.frame);
     float width = CGRectGetWidth(self.frame);
-    _serviceIcon = [[UIImageView alloc] initWithFrame:CGRectMake(padding, padding, padding * 2, padding * 2)];
+    _serviceIcon = [[UIImageView alloc] initWithFrame:CGRectMake(padding,
+                                                                 padding,
+                                                                 padding * 2,
+                                                                 padding * 2)];
     _serviceIcon.contentMode = UIViewContentModeScaleAspectFit;
     [self addSubview:_serviceIcon];
     
     float iconMaxX = CGRectGetMaxX(_serviceIcon.frame);
-    _statusLabel.frame = CGRectMake(iconMaxX + padding, 0, width - iconMaxX - padding - padding, kSERVICE_INDICATOR_HEIGHT);
+    _statusLabel.frame = CGRectMake(iconMaxX + padding,
+                                    0,
+                                    width - iconMaxX - padding - padding,
+                                    kSERVICE_INDICATOR_HEIGHT);
+    
     origStatusFrame = _statusLabel.frame;
     
     [self addSubview:_statusLabel];
     
-    _closeButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.frame) - height, 0, height, height)];
+    _closeButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.frame) - height,
+                                                              0,
+                                                              height,
+                                                              height)];
+    
     [_closeButton setImage:[UIImage imageNamed:@"closebutton-white"] forState:UIControlStateNormal];
     [_closeButton addTarget:self action:@selector(tappedCloseButton) forControlEvents:UIControlEventTouchUpInside];
     _closeButton.hidden = YES;
@@ -123,7 +137,11 @@
 
 - (void)setupProgressBar
 {
-    progressBarView = [[UIImageView alloc] initWithFrame:CGRectMake(0, -3, [UIScreen mainScreen].bounds.size.width, 3)];
+    progressBarView = [[UIImageView alloc] initWithFrame:CGRectMake(0,
+                                                                    -kPROGRESS_BAR_HEIGHT,
+                                                                    [UIScreen mainScreen].bounds.size.width,
+                                                                    kPROGRESS_BAR_HEIGHT)];
+    
     NSMutableArray *animationImages = [[NSMutableArray alloc] initWithCapacity:16];
     
     for (int x = 1; x <= 16; x++)
@@ -134,7 +152,11 @@
     progressBarView.animationImages = animationImages;
     [progressBarView startAnimating];
     
-    _progressBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 3)];
+    _progressBar = [[UIView alloc] initWithFrame:CGRectMake(0,
+                                                            0,
+                                                            [UIScreen mainScreen].bounds.size.width,
+                                                            kPROGRESS_BAR_HEIGHT)];
+    
     _progressBar.backgroundColor = [UIColor blackColor];
     
     [progressBarView addSubview:_progressBar];
@@ -167,13 +189,12 @@
     _failureLabel.numberOfLines = 3;
     _failureLabel.minimumScaleFactor = 1;
     [self addSubview:_failureLabel];
-    _failureLabel.text = @"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.";
     _failureLabel.hidden = YES;
     
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFailureDescription)];
 }
 
-#pragma mark - Parser methods
+#pragma mark - Parser
 
 - (void)queueData:(id)updateData
 {
@@ -217,12 +238,12 @@
 {
     if ([_activeServiesQueue count] == 1) {
         [self startWorker];
-        NSLog(@"Starting worker");
+        DLog(@"Starting worker");
     }
     
     if ([array isEqual:_toBeDisplayed] && !isRunning && !paused)
     {
-        NSLog(@"Starting UI %@", isRunning ? @"YES" : @"NO");
+        DLog(@"Starting UI %@", isRunning ? @"YES" : @"NO");
         [self updateUI];
     }
 }
@@ -249,7 +270,7 @@
                 if (currentData != nil)
                 {
                     [self.toBeDisplayed addObject:currentData];
-                    NSLog(@"ADDING: %@", currentData.aTitle);
+                    DLog(@"ADDING: %@", currentData.aTitle);
                 }
             }
             
@@ -262,9 +283,7 @@
                 activeObject = 0;
             }
         }
-        
-         NSLog(@"DEAD WORKER: %@", [NSThread currentThread]);
-        
+         DLog(@"DEAD WORKER: %@", [NSThread currentThread]);
     });
 }
 
@@ -288,7 +307,7 @@
             if (!paused)
             {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    NSLog(@"New title: %@", data.aTitle);
+                    DLog(@"New title: %@", data.aTitle);
                     
                     if (![self isVisible])
                     {
@@ -297,7 +316,7 @@
                                          completion:nil];
                     }
                     
-                    // NO FAILURE
+                    // SUCCESS
                     if ([self isVisible] && data && !data.isFailure)
                     {
                         if (data.anImageString == nil || data.anImageString.length == 0)
@@ -355,6 +374,8 @@
                         [self updateProgressBarWithStep:0 andMaxSteps:0];
                         [self updateAndAnimateTitle:data.aTitle];
                         
+                        _failureLabel.text = data.aDescription;
+
                         CGRect frame = _statusLabel.frame;
                         frame.origin.y = frame.origin.y - 5;
                         
@@ -362,8 +383,12 @@
                                          animations:^{
                                             _statusLabel.frame = frame;
                                              self.backgroundColor = [UIColor colorWithRed:0.75 green:0 blue:0 alpha:0.9f];}
-                                         completion:^(BOOL finished){[_statusLabel addGestureRecognizer:tapGesture];
-                                             [UIView animateWithDuration:0.2f delay:0.f options:UIViewAnimationOptionCurveEaseIn animations:^{
+                                         completion:^(BOOL finished){
+                                             [_statusLabel addGestureRecognizer:tapGesture];
+                                             [UIView animateWithDuration:0.2f
+                                                                   delay:0.f
+                                                                 options:UIViewAnimationOptionCurveEaseIn
+                                                              animations:^{
                                                  readMoreLabel.alpha = 1.0f;}
                                                               completion:nil];
                         }];
@@ -378,7 +403,7 @@
             [self performSelectorOnMainThread:@selector(removeFS) withObject:nil waitUntilDone:NO];
         }
         
-        NSLog(@"DEAD UI: %@", [NSThread currentThread]);
+        DLog(@"DEAD UI: %@", [NSThread currentThread]);
         isRunning = NO;
     });
 }
@@ -395,7 +420,10 @@
         int calculatedWidth = (int)([UIScreen mainScreen].bounds.size.width * newStep);
         
         CGRect oldFrame = _progressBar.frame;
-        CGRect newFrame = CGRectMake([UIScreen mainScreen].bounds.size.width - calculatedWidth, oldFrame.origin.y, [UIScreen mainScreen].bounds.size.width, 3);
+        CGRect newFrame = CGRectMake([UIScreen mainScreen].bounds.size.width - calculatedWidth
+                                     , oldFrame.origin.y,
+                                     [UIScreen mainScreen].bounds.size.width,
+                                     3);
         
         [UIView animateWithDuration:0.75f
                               delay:0.0
@@ -408,25 +436,37 @@
 
 - (void)updateAndAnimateTitle:(NSString *)titleString
 {
-    [UIView animateWithDuration:0.2f delay:0.f options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [_statusLabel setAlpha:0.f];
-    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2f
+                          delay:0.f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+        [_statusLabel setAlpha:0.f];}
+                     completion:^(BOOL finished){
         _statusLabel.text = titleString;
-        [UIView animateWithDuration:0.2f delay:0.f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            [_statusLabel setAlpha:1.f];
-        } completion:nil];
+                         [UIView animateWithDuration:0.2f
+                                               delay:0.f
+                                             options:UIViewAnimationOptionCurveEaseInOut
+                                          animations:^{
+                          [_statusLabel setAlpha:1.f];}
+                                          completion:nil];
     }];
 }
 
 - (void)updateAndAnimateIcon:(NSString *)iconString
 {
-    [UIView animateWithDuration:0.2f delay:0.f options:UIViewAnimationOptionCurveEaseIn animations:^{
-        [_serviceIcon setAlpha:0.f];
-    } completion:^(BOOL finished) {
-        _serviceIcon.image = [UIImage imageNamed:iconString];
-        [UIView animateWithDuration:0.2f delay:0.f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            [_serviceIcon setAlpha:1.f];
-        } completion:nil];
+    [UIView animateWithDuration:0.2f
+                          delay:0.f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+                         [_serviceIcon setAlpha:0.f];}
+                     completion:^(BOOL finished){
+                         _serviceIcon.image = [UIImage imageNamed:iconString];
+                         [UIView animateWithDuration:0.2f
+                                               delay:0.f
+                                             options:UIViewAnimationOptionCurveEaseInOut
+                                          animations:^{
+                                              [_serviceIcon setAlpha:1.f];
+                                          } completion:nil];
     }];
 }
 
@@ -437,15 +477,18 @@
     readMoreLabel.alpha = 0;
     [_activeServiesQueue removeAllObjects];
     dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-    dispatch_suspend(dispatch_get_main_queue());
+    //dispatch_suspend(dispatch_get_main_queue());
     [self removeFS];
 }
 
 - (void)showFailureDescription
 {
-    NSLog(@"PAUSED: %@", paused ? @"YES" : @"NO");
+    DLog(@"PAUSED: %@", paused ? @"YES" : @"NO");
 
-    CGRect failureFrame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT_FAILURE, [UIScreen mainScreen].bounds.size.width, kSERVICE_INDICATOR_HEIGHT_FAILURE);
+    CGRect failureFrame = CGRectMake(0,
+                                     [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT_FAILURE,
+                                     [UIScreen mainScreen].bounds.size.width,
+                                     kSERVICE_INDICATOR_HEIGHT_FAILURE);
 
     [UIView animateWithDuration:0.2f
                      animations:^{
@@ -465,7 +508,7 @@
 
 - (void)removeFS
 {
-    NSLog(@"Removing FS");
+    DLog(@"Removing FS from view");
     if ([self isVisible])
     {
         [UIView animateWithDuration:0.2f

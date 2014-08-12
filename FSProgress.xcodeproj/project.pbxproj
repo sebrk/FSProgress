@@ -22,7 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		9E49E77F198152B7005FC572 /* FSData.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BA519814F1F00B017FA /* FSData.h */; };
 		9E49E780198152B7005FC572 /* FSServiceActivityView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BAA19814F1F00B017FA /* FSServiceActivityView.h */; };
 		9E49E78719815533005FC572 /* FSData.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BA519814F1F00B017FA /* FSData.h */; };
 		9E49E78819815533005FC572 /* FSServiceActivityView.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E547BAA19814F1F00B017FA /* FSServiceActivityView.h */; };
@@ -50,7 +49,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				9E49E77F198152B7005FC572 /* FSData.h in CopyFiles */,
 				9E49E780198152B7005FC572 /* FSServiceActivityView.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,7 +214,7 @@
 		9E49E78319815460005FC572 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 48;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -226,7 +224,7 @@
 		9E49E78419815460005FC572 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 36;
+				CURRENT_PROJECT_VERSION = 48;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VERSIONING_SYSTEM = "apple-generic";
