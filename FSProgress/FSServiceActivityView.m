@@ -171,16 +171,16 @@
                                                               CGRectGetWidth(self.frame) - 2 * padding,
                                                               kSERVICE_INDICATOR_HEIGHT)];
     readMoreLabel.alpha = 0;
-    readMoreLabel.font = [UIFont italicSystemFontOfSize:font.pointSize - 4.0f];
+    readMoreLabel.font = [UIFont boldSystemFontOfSize:font.pointSize - 4.0f];
     readMoreLabel.textColor = [UIColor whiteColor];
     readMoreLabel.backgroundColor = [UIColor clearColor];
     readMoreLabel.textAlignment = NSTextAlignmentLeft;
-    readMoreLabel.text = @"Read more";
+    readMoreLabel.text = @"More info available";
     [self addSubview:readMoreLabel];
     
     _failureLabel = [[UILabel alloc] initWithFrame:CGRectMake(padding,
                                                               _statusLabel.frame.origin.y + padding,
-                                                              CGRectGetWidth(self.frame) - 2 * padding,
+                                                              CGRectGetWidth(self.frame) - 4 * padding,
                                                               kSERVICE_INDICATOR_HEIGHT_FAILURE)];
     _failureLabel.font = [UIFont systemFontOfSize:font.pointSize - 4.0f];
     _failureLabel.textColor = [UIColor whiteColor];
@@ -402,7 +402,7 @@
                         [UIView animateWithDuration:0.2f
                                          animations:^{
                                             _statusLabel.frame = frame;
-                                             self.backgroundColor = [UIColor colorWithRed:0.75 green:0 blue:0 alpha:0.9f];}
+                                             self.backgroundColor = [UIColor colorWithRed:0.57f green:0.15f blue:0.15f alpha:0.95f];}
                                          completion:^(BOOL finished){
                                              [_statusLabel addGestureRecognizer:tapGesture];
                                              [UIView animateWithDuration:0.2f
@@ -431,9 +431,16 @@
 - (void)updateProgressBarWithStep:(int)step andMaxSteps:(int)maxStep
 {
     if (step == 0 && maxStep == 0)
+    {
         progressBarView.hidden = YES;
+    }
     else
     {
+        if (step == 1)
+        {
+            _progressBar.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, kPROGRESS_BAR_HEIGHT);
+        }
+        
         progressBarView.hidden = NO;
         
         double newStep = 1 - ((float)step / (float)maxStep);
@@ -495,7 +502,7 @@
 - (void)tappedCloseButton
 {
     readMoreLabel.alpha = 0;
-    [_activeServiesQueue removeAllObjects];
+    //[_activeServiesQueue removeAllObjects];
     dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     //dispatch_suspend(dispatch_get_main_queue());
     [self removeFS];
