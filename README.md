@@ -4,7 +4,7 @@ FSProgress is a feedback system which includes a queuing system. It handles mult
 
 It uses GCD as a Singelton and can be messaged by sending objects that conform to the **FSData** protocol.
 
-This is setup as a iOS Framework. Import it as a submodule or build it separately and add it to your project.
+This is setup as an iOS Framework. Import it as a submodule or build it separately and add it to your project.
 
 
 ### How do I get set up? ###
