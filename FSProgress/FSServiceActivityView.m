@@ -11,7 +11,7 @@
 #define kSERVICE_DISPLAY_TIME 5.0f
 #define kPROGRESS_BAR_HEIGHT 3.0f
 
-#import <AudioToolbox/AudioToolbox.h> 
+#import <AudioToolbox/AudioToolbox.h>
 #import "FSServiceActivityView.h"
 #import "FSOrderedDictionary.h"
 #import "FSData.h"
@@ -29,7 +29,7 @@
     int activeObject;
     NSNumber *activeService;
     
-    BOOL isRunning;
+    BOOL UIRunning, workerRunning;
     BOOL paused;
 }
 
@@ -45,7 +45,7 @@
 @property (nonatomic, strong) FSMutableArray *toBeDisplayed;
 
 @end
-    
+
 @implementation FSServiceActivityView
 
 #pragma mark - Init methods
@@ -62,7 +62,7 @@
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController andFont:(UIFont *)font
-{    
+{
     _rootViewController = rootViewController;
     _activeServiesQueue = [[FSOrderedDictionary alloc] init];
     _toBeDisplayed = [[FSMutableArray alloc] init];
@@ -70,7 +70,7 @@
     [_toBeDisplayed setDelegate:self];
     
     origFrame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT, [UIScreen mainScreen].bounds.size.width, kSERVICE_INDICATOR_HEIGHT);
-        
+    
     self.frame = origFrame;
     
     if (self)
@@ -78,9 +78,9 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
         self.clipsToBounds = NO;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.9f];
-     
+        
         padding = 10;
-
+        
         [self setupProgressBar];
         [self setupStatusLabel:font];
         [self setupFailureLabel:font];
@@ -104,7 +104,7 @@
     _statusLabel.backgroundColor = [UIColor clearColor];
     _statusLabel.textAlignment = NSTextAlignmentLeft;
     _statusLabel.userInteractionEnabled = YES;
-
+    
     float height = CGRectGetHeight(self.frame);
     float width = CGRectGetWidth(self.frame);
     _serviceIcon = [[UIImageView alloc] initWithFrame:CGRectMake(padding,
@@ -132,7 +132,7 @@
     [_closeButton setImage:[UIImage imageNamed:@"closebutton-white"] forState:UIControlStateNormal];
     [_closeButton addTarget:self action:@selector(tappedCloseButton) forControlEvents:UIControlEventTouchUpInside];
     _closeButton.hidden = YES;
-        
+    
     [self addSubview:_closeButton];
 }
 
@@ -202,7 +202,7 @@
     if ([updateData conformsToProtocol:@protocol(FSData)])
     {
         NSObject<FSData> *data = updateData;
-
+        
         if (data.aTitle != nil && data.aServiceID && data.aCurrentStep <= data.aMaxSteps)
         {
             // If there are no active services add it to the queue at position 0
@@ -237,14 +237,12 @@
 
 - (void)object:(id)object wasAddedToArray:(FSMutableArray *)array
 {
-    if ([_activeServiesQueue count] == 1) {
+    if ( [_activeServiesQueue count] == 1 && !workerRunning) {
         [self startWorker];
-        DLog(@"Starting worker");
     }
     
-    if ([array isEqual:_toBeDisplayed] && !isRunning && !paused)
+    if ([array isEqual:_toBeDisplayed] && !UIRunning && !paused)
     {
-        DLog(@"Starting UI %@", isRunning ? @"YES" : @"NO");
         [self updateUI];
     }
 }
@@ -256,11 +254,15 @@
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
+        DLog(@"STARTING WORKER: %@", [NSThread currentThread]);
+        
         FSMutableArray *currentService;
         NSObject<FSData> *currentData;
         
         while (currentData.aCurrentStep <= currentData.aMaxSteps && [_activeServiesQueue objectForKey:[_activeServiesQueue keyAtIndex:0]] != nil)
         {
+            workerRunning = YES;
+            
             sleep(1);
             
             currentService = [_activeServiesQueue objectForKey:[_activeServiesQueue keyAtIndex:0]];
@@ -271,7 +273,7 @@
                 if (currentData != nil)
                 {
                     [self.toBeDisplayed addObject:currentData];
-                    DLog(@"ADDING: %@", currentData.aTitle);
+                    DLog(@"ADDING TO QUEUE: %@", currentData.aTitle);
                 }
             }
             
@@ -284,7 +286,8 @@
                 activeObject = 0;
             }
         }
-         DLog(@"DEAD WORKER: %@", [NSThread currentThread]);
+        workerRunning = NO;
+        DLog(@"DEAD WORKER: %@", [NSThread currentThread]);
     });
 }
 
@@ -292,9 +295,11 @@
 
 - (void)updateUI
 {
-    isRunning = YES;
+    UIRunning = YES;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        DLog(@"ACTIVATE UI: %@", [NSThread currentThread]);
         
         while ([self.toBeDisplayed count] != 0 && !paused)
         {
@@ -308,7 +313,7 @@
             if (!paused)
             {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    DLog(@"New title: %@", data.aTitle);
+                    DLog(@"SHOWING NEW TITLE: %@", data.aTitle);
                     
                     if (![self isVisible])
                     {
@@ -348,7 +353,7 @@
                         {
                             _closeButton.hidden = YES;
                         }
-
+                        
                         if (data.useHaptic)
                         {
                             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
@@ -365,7 +370,7 @@
                     else if (data.isFailure)
                     {
                         paused = YES;
-                     
+                        
                         if (data.anImageString == nil || data.anImageString.length == 0)
                         {
                             _serviceIcon.hidden = YES;
@@ -395,13 +400,13 @@
                         [self updateAndAnimateTitle:data.aTitle];
                         
                         _failureLabel.text = data.aDescription;
-
+                        
                         CGRect frame = _statusLabel.frame;
                         frame.origin.y = frame.origin.y - 5;
                         
                         [UIView animateWithDuration:0.2f
                                          animations:^{
-                                            _statusLabel.frame = frame;
+                                             _statusLabel.frame = frame;
                                              self.backgroundColor = [UIColor colorWithRed:0.57f green:0.15f blue:0.15f alpha:0.95f];}
                                          completion:^(BOOL finished){
                                              [_statusLabel addGestureRecognizer:tapGesture];
@@ -409,9 +414,9 @@
                                                                    delay:0.f
                                                                  options:UIViewAnimationOptionCurveEaseIn
                                                               animations:^{
-                                                 readMoreLabel.alpha = 1.0f;}
+                                                                  readMoreLabel.alpha = 1.0f;}
                                                               completion:nil];
-                        }];
+                                         }];
                     }
                 });
             }
@@ -424,7 +429,7 @@
         }
         
         DLog(@"DEAD UI: %@", [NSThread currentThread]);
-        isRunning = NO;
+        UIRunning = NO;
     });
 }
 
@@ -467,16 +472,16 @@
                           delay:0.f
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
-        [_statusLabel setAlpha:0.f];}
+                         [_statusLabel setAlpha:0.f];}
                      completion:^(BOOL finished){
-        _statusLabel.text = titleString;
+                         _statusLabel.text = titleString;
                          [UIView animateWithDuration:0.2f
                                                delay:0.f
                                              options:UIViewAnimationOptionCurveEaseInOut
                                           animations:^{
-                          [_statusLabel setAlpha:1.f];}
+                                              [_statusLabel setAlpha:1.f];}
                                           completion:nil];
-    }];
+                     }];
 }
 
 - (void)updateAndAnimateIcon:(NSString *)iconString
@@ -494,7 +499,7 @@
                                           animations:^{
                                               [_serviceIcon setAlpha:1.f];
                                           } completion:nil];
-    }];
+                     }];
 }
 
 #pragma mark - Button actions
@@ -502,21 +507,19 @@
 - (void)tappedCloseButton
 {
     readMoreLabel.alpha = 0;
-    //[_activeServiesQueue removeAllObjects];
     dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-    //dispatch_suspend(dispatch_get_main_queue());
     [self removeFS];
+    paused = NO;
+    [self updateUI];
 }
 
 - (void)showFailureDescription
 {
-    DLog(@"PAUSED: %@", paused ? @"YES" : @"NO");
-
     CGRect failureFrame = CGRectMake(0,
                                      [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT_FAILURE,
                                      [UIScreen mainScreen].bounds.size.width,
                                      kSERVICE_INDICATOR_HEIGHT_FAILURE);
-
+    
     [UIView animateWithDuration:0.2f
                      animations:^{
                          readMoreLabel.alpha = 0;
@@ -535,9 +538,9 @@
 
 - (void)removeFS
 {
-    DLog(@"Removing FS from view");
     if ([self isVisible])
     {
+        DLog(@"REMOVING FROM VIEW");
         [UIView animateWithDuration:0.2f
                          animations:^{self.alpha = 0.0f;}
                          completion:^(BOOL finished){

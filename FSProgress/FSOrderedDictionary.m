@@ -64,7 +64,6 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 	}
     else
         [dictionary setObject:anObject forKey:aKey];
-
 }
 
 - (void)removeObjectForKey:(id)aKey
