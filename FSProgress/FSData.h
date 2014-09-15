@@ -19,14 +19,14 @@
 @property (nonatomic, strong) NSNumber *aServiceID;
 @property (nonatomic, strong) NSString *aTitle;
 @property (nonatomic, assign) int aMaxSteps;
-@property (nonatomic, strong) NSString *aDescription;
+@property (nonatomic, strong) NSString *anErrorDescription;
 @property (nonatomic, strong) NSString *anImageString;
-@property (nonatomic, assign) BOOL isFailure;
+@property (nonatomic, assign) BOOL isError;
 @property (nonatomic, assign) BOOL useHaptic;
 @property (nonatomic, assign) BOOL useSound;
 
 @optional
-- (id)initWithID:(NSNumber *)serviceID andTitle:(NSString *)title currentStep:(int)currentStep andMaxSteps:(int)maxSteps andDescription:(NSString *)description andIcon:(NSString *)imageString;
+- (id)initWithID:(NSNumber *)serviceID andTitle:(NSString *)title currentStep:(int)currentStep andMaxSteps:(int)maxSteps andErrorDescription:(NSString *)errorDescription andIcon:(NSString *)imageString;
 
 - (NSString *)description;
 

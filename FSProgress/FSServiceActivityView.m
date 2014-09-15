@@ -7,7 +7,7 @@
 //
 
 #define kSERVICE_INDICATOR_HEIGHT 40.0f
-#define kSERVICE_INDICATOR_HEIGHT_FAILURE 80.0f
+#define kSERVICE_INDICATOR_HEIGHT_ERROR 80.0f
 #define kSERVICE_DISPLAY_TIME 5.0f
 #define kPROGRESS_BAR_HEIGHT 3.0f
 
@@ -35,7 +35,7 @@
 
 @property (nonatomic, strong) UIViewController *rootViewController;
 @property (nonatomic, strong) UILabel *statusLabel;
-@property (nonatomic, strong) UILabel *failureLabel;
+@property (nonatomic, strong) UILabel *errorLabel;
 @property (nonatomic, strong) NSDictionary *serviceNotificationMessageKeys;
 @property (nonatomic, strong) UIImageView *serviceIcon;
 @property (nonatomic, strong) UIView *progressBar;
@@ -83,7 +83,7 @@
         
         [self setupProgressBar];
         [self setupStatusLabel:font];
-        [self setupFailureLabel:font];
+        [self setupErrorLabel:font];
         
         self.alpha = 0;
     }
@@ -164,7 +164,7 @@
     [self addSubview:progressBarView];
 }
 
-- (void)setupFailureLabel:(UIFont *)font
+- (void)setupErrorLabel:(UIFont *)font
 {
     readMoreLabel = [[UILabel alloc] initWithFrame:CGRectMake(_statusLabel.frame.origin.x,
                                                               _statusLabel.frame.origin.y + padding,
@@ -178,21 +178,21 @@
     readMoreLabel.text = @"More info available";
     [self addSubview:readMoreLabel];
     
-    _failureLabel = [[UILabel alloc] initWithFrame:CGRectMake(padding,
+    _errorLabel = [[UILabel alloc] initWithFrame:CGRectMake(padding,
                                                               _statusLabel.frame.origin.y + padding,
                                                               CGRectGetWidth(self.frame) - 4 * padding,
-                                                              kSERVICE_INDICATOR_HEIGHT_FAILURE)];
-    _failureLabel.font = [UIFont systemFontOfSize:font.pointSize - 4.0f];
-    _failureLabel.textColor = [UIColor whiteColor];
-    _failureLabel.backgroundColor = [UIColor clearColor];
-    _failureLabel.textAlignment = NSTextAlignmentLeft;
-    _failureLabel.adjustsFontSizeToFitWidth = YES;
-    _failureLabel.numberOfLines = 3;
-    _failureLabel.minimumScaleFactor = 1;
-    [self addSubview:_failureLabel];
-    _failureLabel.hidden = YES;
+                                                              kSERVICE_INDICATOR_HEIGHT_ERROR)];
+    _errorLabel.font = [UIFont systemFontOfSize:font.pointSize - 4.0f];
+    _errorLabel.textColor = [UIColor whiteColor];
+    _errorLabel.backgroundColor = [UIColor clearColor];
+    _errorLabel.textAlignment = NSTextAlignmentLeft;
+    _errorLabel.adjustsFontSizeToFitWidth = YES;
+    _errorLabel.numberOfLines = 3;
+    _errorLabel.minimumScaleFactor = 1;
+    [self addSubview:_errorLabel];
+    _errorLabel.hidden = YES;
     
-    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFailureDescription)];
+    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showErrorDescription)];
 }
 
 #pragma mark - Parser
@@ -323,7 +323,7 @@
                     }
                     
                     // SUCCESS
-                    if ([self isVisible] && data && !data.isFailure)
+                    if ([self isVisible] && data && !data.isError)
                     {
                         if (data.anImageString == nil || data.anImageString.length == 0)
                         {
@@ -366,8 +366,8 @@
                         [self updateProgressBarWithStep:data.aCurrentStep andMaxSteps:data.aMaxSteps];
                         [self updateAndAnimateTitle:data.aTitle];
                     }
-                    // IS FAILURE
-                    else if (data.isFailure)
+                    // IS AN ERROR
+                    else if (data.isError)
                     {
                         paused = YES;
                         
@@ -399,7 +399,7 @@
                         [self updateProgressBarWithStep:0 andMaxSteps:0];
                         [self updateAndAnimateTitle:data.aTitle];
                         
-                        _failureLabel.text = data.aDescription;
+                        _errorLabel.text = data.anErrorDescription;
                         
                         CGRect frame = _statusLabel.frame;
                         frame.origin.y = frame.origin.y - 5;
@@ -513,19 +513,19 @@
     [self updateUI];
 }
 
-- (void)showFailureDescription
+- (void)showErrorDescription
 {
-    CGRect failureFrame = CGRectMake(0,
-                                     [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT_FAILURE,
-                                     [UIScreen mainScreen].bounds.size.width,
-                                     kSERVICE_INDICATOR_HEIGHT_FAILURE);
+    CGRect errorFrame = CGRectMake(0,
+                                   [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT_ERROR,
+                                   [UIScreen mainScreen].bounds.size.width,
+                                   kSERVICE_INDICATOR_HEIGHT_ERROR);
     
     [UIView animateWithDuration:0.2f
                      animations:^{
                          readMoreLabel.alpha = 0;
                          _statusLabel.frame = origStatusFrame;
-                         self.frame = failureFrame;
-                         _failureLabel.hidden = NO;}
+                         self.frame = errorFrame;
+                         _errorLabel.hidden = NO;}
                      completion:nil];
 }
 
