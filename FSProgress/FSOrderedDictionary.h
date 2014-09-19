@@ -24,5 +24,6 @@
 - (id)keyAtIndex:(NSUInteger)anIndex;
 - (id)popFirstObject;
 - (NSEnumerator *)reverseKeyEnumerator;
+- (void)removeAllObjects;
 
 @end

@@ -210,24 +210,29 @@
             {
                 FSMutableArray *new = [[FSMutableArray alloc] initWithObjects:data, nil];
                 [_activeServiesQueue setObject:new forKey:data.aServiceID];
+                DLog(@"NO SERVICES, ADDING TO NEW QUEUE: %@", data.aTitle);
             }
             // If serviceID already exists in queue and is at position 0
             else if ([(NSObject<FSData>*)[[[_activeServiesQueue objectForKey:[_activeServiesQueue keyAtIndex:0]] objectAtIndex:0] aServiceID] isEqual:data.aServiceID])
             {
                 FSMutableArray *existing = [_activeServiesQueue objectForKey:data.aServiceID];
                 [existing addObject:data];
+                DLog(@"SERVICE EXISTS AND IS RUNNING: %@", data.aTitle);
+
             }
             // If it exists but is not the active service (not queued in position 0), replace existing data.
             else if ([_activeServiesQueue objectForKey:data.aServiceID] != nil && ![(NSObject<FSData>*)[[[_activeServiesQueue objectForKey:[_activeServiesQueue keyAtIndex:0]] objectAtIndex:0] aServiceID] isEqual:data.aServiceID])
             {
                 FSMutableArray *existingNotActive = [_activeServiesQueue objectForKey:data.aServiceID];
                 [existingNotActive replaceObjectAtIndex:0 withObject:data];
+                DLog(@"SERVICE EXISTS BUT IS __NOT__ RUNNING: %@", data.aTitle);
             }
             // If serviceID is not present, add a new queue
             else if ([_activeServiesQueue objectForKey:data.aServiceID] == nil)
             {
                 FSMutableArray *new = [[FSMutableArray alloc] initWithObjects:data, nil];
                 [_activeServiesQueue setObject:new forKey:data.aServiceID];
+                DLog(@"NEW SERVICE, ADDING NEW QUEUE: %@", data.aTitle);
             }
         }
     }
@@ -273,7 +278,7 @@
                 if (currentData != nil)
                 {
                     [self.toBeDisplayed addObject:currentData];
-                    DLog(@"ADDING TO QUEUE: %@", currentData.aTitle);
+                    DLog(@"ADDING TO DISPLAY QUEUE: %@", currentData.aTitle);
                 }
             }
             
@@ -556,6 +561,13 @@
 - (void)removeFromView
 {
     [self tappedCloseButton];
+    
+    @synchronized (_activeServiesQueue)
+    {
+        [_activeServiesQueue removeAllObjects];
+        [self.toBeDisplayed removeAllObjects];
+        DLog(@"CLEARED ALL QUEUES, REMOVING FROM VIEW");
+    }
 }
 
 @end

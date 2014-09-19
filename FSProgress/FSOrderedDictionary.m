@@ -72,6 +72,12 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 	[array removeObject:aKey];
 }
 
+- (void)removeAllObjects
+{
+    [dictionary removeAllObjects];
+    [array removeAllObjects];
+}
+
 - (NSUInteger)count
 {
 	return [dictionary count];
