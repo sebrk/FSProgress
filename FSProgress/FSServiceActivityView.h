@@ -29,4 +29,7 @@
 // Hides the view and clears the current queue.
 - (void)removeFromView;
 
+// Stops and resets FSSServiceActivity
+- (void)stopService;
+
 @end

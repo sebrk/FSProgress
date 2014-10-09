@@ -43,6 +43,7 @@
 @property (nonatomic, strong) UIButton *closeButton;
 @property (atomic, strong) FSOrderedDictionary *activeServiesQueue;
 @property (nonatomic, strong) FSMutableArray *toBeDisplayed;
+@property (nonatomic, strong) NSTimer *monitorTimer;
 
 @end
 
@@ -63,32 +64,41 @@
 
 - (void)setRootViewController:(UIViewController *)rootViewController andFont:(UIFont *)font
 {
-    _rootViewController = rootViewController;
-    _activeServiesQueue = [[FSOrderedDictionary alloc] init];
-    _toBeDisplayed = [[FSMutableArray alloc] init];
-    [_activeServiesQueue.array setDelegate:self];
-    [_toBeDisplayed setDelegate:self];
-    
-    origFrame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT, [UIScreen mainScreen].bounds.size.width, kSERVICE_INDICATOR_HEIGHT);
-    
-    self.frame = origFrame;
-    
-    if (self)
-    {
-        self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
-        self.clipsToBounds = NO;
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.9f];
+    static dispatch_once_t setRootOnce;
+    dispatch_once(&setRootOnce, ^{
+        _rootViewController = rootViewController;
+        _activeServiesQueue = [[FSOrderedDictionary alloc] init];
+        _toBeDisplayed = [[FSMutableArray alloc] init];
+        [_activeServiesQueue.array setDelegate:self];
+        [_toBeDisplayed setDelegate:self];
         
-        padding = 10;
+        origFrame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height - kSERVICE_INDICATOR_HEIGHT, [UIScreen mainScreen].bounds.size.width, kSERVICE_INDICATOR_HEIGHT);
         
-        [self setupProgressBar];
-        [self setupStatusLabel:font];
-        [self setupErrorLabel:font];
+        self.frame = origFrame;
         
-        self.alpha = 0;
-    }
-    
-    [rootViewController.view addSubview:self];
+        if (self)
+        {
+            self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin;
+            self.clipsToBounds = NO;
+            self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.9f];
+            
+            padding = 10;
+            
+            [self setupProgressBar];
+            [self setupStatusLabel:font];
+            [self setupErrorLabel:font];
+            
+            self.alpha = 0;
+        }
+        
+        _monitorTimer = [NSTimer scheduledTimerWithTimeInterval:15.0
+                                                           target:self
+                                                         selector:@selector(monitor)
+                                                         userInfo:nil
+                                                          repeats:YES];
+        
+        [rootViewController.view addSubview:self];
+    });
 }
 
 #pragma mark - UI setup methods
@@ -117,7 +127,7 @@
     float iconMaxX = CGRectGetMaxX(_serviceIcon.frame);
     _statusLabel.frame = CGRectMake(iconMaxX + padding,
                                     0,
-                                    width - iconMaxX - padding - padding,
+                                    width - iconMaxX - 2 * padding,
                                     kSERVICE_INDICATOR_HEIGHT);
     
     origStatusFrame = _statusLabel.frame;
@@ -166,10 +176,7 @@
 
 - (void)setupErrorLabel:(UIFont *)font
 {
-    readMoreLabel = [[UILabel alloc] initWithFrame:CGRectMake(_statusLabel.frame.origin.x,
-                                                              _statusLabel.frame.origin.y + padding,
-                                                              CGRectGetWidth(self.frame) - 2 * padding,
-                                                              kSERVICE_INDICATOR_HEIGHT)];
+    readMoreLabel = [[UILabel alloc] init];
     readMoreLabel.alpha = 0;
     readMoreLabel.font = [UIFont boldSystemFontOfSize:font.pointSize - 4.0f];
     readMoreLabel.textColor = [UIColor whiteColor];
@@ -179,9 +186,9 @@
     [self addSubview:readMoreLabel];
     
     _errorLabel = [[UILabel alloc] initWithFrame:CGRectMake(padding,
-                                                              _statusLabel.frame.origin.y + padding,
-                                                              CGRectGetWidth(self.frame) - 4 * padding,
-                                                              kSERVICE_INDICATOR_HEIGHT_ERROR)];
+                                                            _statusLabel.frame.origin.y + padding,
+                                                            CGRectGetWidth(self.frame) - 4 * padding,
+                                                            kSERVICE_INDICATOR_HEIGHT_ERROR)];
     _errorLabel.font = [UIFont systemFontOfSize:font.pointSize - 4.0f];
     _errorLabel.textColor = [UIColor whiteColor];
     _errorLabel.backgroundColor = [UIColor clearColor];
@@ -218,14 +225,13 @@
                 FSMutableArray *existing = [_activeServiesQueue objectForKey:data.aServiceID];
                 [existing addObject:data];
                 DLog(@"SERVICE EXISTS AND IS RUNNING: %@", data.aTitle);
-
             }
             // If it exists but is not the active service (not queued in position 0), replace existing data.
             else if ([_activeServiesQueue objectForKey:data.aServiceID] != nil && ![(NSObject<FSData>*)[[[_activeServiesQueue objectForKey:[_activeServiesQueue keyAtIndex:0]] objectAtIndex:0] aServiceID] isEqual:data.aServiceID])
             {
                 FSMutableArray *existingNotActive = [_activeServiesQueue objectForKey:data.aServiceID];
                 [existingNotActive replaceObjectAtIndex:0 withObject:data];
-                DLog(@"SERVICE EXISTS BUT IS __NOT__ RUNNING: %@", data.aTitle);
+                DLog(@"SERVICE EXISTS BUT IS __NOT__ SHOWING: %@", data.aTitle);
             }
             // If serviceID is not present, add a new queue
             else if ([_activeServiesQueue objectForKey:data.aServiceID] == nil)
@@ -246,9 +252,16 @@
         [self startWorker];
     }
     
+    DLog(@"UI RUNNING: %@", UIRunning ? @"YES" : @"NO");
+    
     if ([array isEqual:_toBeDisplayed] && !UIRunning && !paused)
     {
         [self updateUI];
+    }
+    
+    if (![_monitorTimer isValid])
+    {
+        [_monitorTimer fire];
     }
 }
 
@@ -273,11 +286,11 @@
             currentService = [_activeServiesQueue objectForKey:[_activeServiesQueue keyAtIndex:0]];
             currentData = [currentService objectAtIndex:activeObject];
             
-            @synchronized (self.toBeDisplayed)
+            @synchronized (_toBeDisplayed)
             {
                 if (currentData != nil)
                 {
-                    [self.toBeDisplayed addObject:currentData];
+                    [_toBeDisplayed addObject:currentData];
                     DLog(@"ADDING TO DISPLAY QUEUE: %@", currentData.aTitle);
                 }
             }
@@ -306,19 +319,19 @@
         
         DLog(@"ACTIVATE UI: %@", [NSThread currentThread]);
         
-        while ([self.toBeDisplayed count] != 0 && !paused)
+        while ([_toBeDisplayed count] != 0 && !paused)
         {
-            NSObject<FSData> *data = [self.toBeDisplayed objectAtIndex:0];
+            NSObject<FSData> *data = [_toBeDisplayed objectAtIndex:0];
             
-            @synchronized (self.toBeDisplayed) {
-                if ([self.toBeDisplayed objectAtIndex:0] != nil)
-                    [self.toBeDisplayed removeObjectAtIndex:0];
+            @synchronized (_toBeDisplayed) {
+                if ([_toBeDisplayed objectAtIndex:0] != nil)
+                    [_toBeDisplayed removeObjectAtIndex:0];
             }
             
             if (!paused)
             {
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    DLog(@"SHOWING NEW TITLE: %@", data.aTitle);
+                    DLog(@"SHOWING NEW TITLE: %@ ON THREAD: %@", data.aTitle, [NSThread currentThread]);
                     
                     if (![self isVisible])
                     {
@@ -327,29 +340,24 @@
                                          completion:nil];
                     }
                     
+                    [self updateStatusFrame:data];
+                    
+                    if (data.useHaptic)
+                    {
+                        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                    }
+                    if (data.useSound)
+                    {
+                        AudioServicesPlaySystemSound(1109);
+                    }
+
+                    [self updateAndAnimateTitle:data.aTitle];
+                    
                     // SUCCESS
                     if ([self isVisible] && data && !data.isError)
                     {
-                        if (data.anImageString == nil || data.anImageString.length == 0)
-                        {
-                            _serviceIcon.hidden = YES;
-                            CGRect frame = _statusLabel.frame;
-                            frame.origin.x = padding;
-                            _statusLabel.frame = frame;
-                            
-                        }
-                        else
-                        {
-                            _serviceIcon.hidden = NO;
-                            if (![_serviceIcon.image isEqual:[UIImage imageNamed:data.anImageString]])
-                            {
-                                [self updateAndAnimateIcon:data.anImageString];
-                            }
-                            
-                            _statusLabel.frame = origStatusFrame;
-                            [_statusLabel removeGestureRecognizer:tapGesture];
-                        }
-                        
+                        [_statusLabel removeGestureRecognizer:tapGesture];
+                    
                         if (data.aCurrentStep == data.aMaxSteps)
                         {
                             _closeButton.hidden = NO;
@@ -359,50 +367,16 @@
                             _closeButton.hidden = YES;
                         }
                         
-                        if (data.useHaptic)
-                        {
-                            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                        }
-                        if (data.useSound)
-                        {
-                            AudioServicesPlaySystemSound(1109);
-                        }
-                        
                         [self updateProgressBarWithStep:data.aCurrentStep andMaxSteps:data.aMaxSteps];
-                        [self updateAndAnimateTitle:data.aTitle];
                     }
-                    // IS AN ERROR
+                    // IS ERROR
                     else if (data.isError)
                     {
                         paused = YES;
                         
-                        if (data.anImageString == nil || data.anImageString.length == 0)
-                        {
-                            _serviceIcon.hidden = YES;
-                            CGRect frame = _statusLabel.frame;
-                            frame.origin.x = padding;
-                            _statusLabel.frame = frame;
-                        }
-                        else
-                        {
-                            _statusLabel.frame = origStatusFrame;
-                            _serviceIcon.hidden = NO;
-                            [self updateAndAnimateIcon:data.anImageString];
-                        }
-                        
                         _closeButton.hidden = NO;
                         
-                        if (data.useHaptic)
-                        {
-                            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                        }
-                        if (data.useSound)
-                        {
-                            AudioServicesPlaySystemSound(1109);
-                        }
-                        
                         [self updateProgressBarWithStep:0 andMaxSteps:0];
-                        [self updateAndAnimateTitle:data.aTitle];
                         
                         _errorLabel.text = data.anErrorDescription;
                         
@@ -414,7 +388,16 @@
                                              _statusLabel.frame = frame;
                                              self.backgroundColor = [UIColor colorWithRed:0.57f green:0.15f blue:0.15f alpha:0.95f];}
                                          completion:^(BOOL finished){
-                                             [_statusLabel addGestureRecognizer:tapGesture];
+                                             if (data.anErrorDescription != nil || data.anErrorDescription.length != 0)
+                                             {
+                                                 [_statusLabel addGestureRecognizer:tapGesture];
+                                             }
+                                             
+                                             readMoreLabel.frame = CGRectMake(_statusLabel.frame.origin.x,
+                                                                              _statusLabel.frame.origin.y + 1.5 * padding,
+                                                                              CGRectGetWidth(self.frame) - 2 * padding,
+                                                                              kSERVICE_INDICATOR_HEIGHT);
+                                             
                                              [UIView animateWithDuration:0.2f
                                                                    delay:0.f
                                                                  options:UIViewAnimationOptionCurveEaseIn
@@ -438,36 +421,46 @@
     });
 }
 
+
 - (void)updateProgressBarWithStep:(int)step andMaxSteps:(int)maxStep
 {
     if (step == 0 && maxStep == 0)
     {
         progressBarView.hidden = YES;
+        _progressBar.frame = CGRectMake([UIScreen mainScreen].bounds.size.width, 0, [UIScreen mainScreen].bounds.size.width, kPROGRESS_BAR_HEIGHT);
     }
     else
     {
-        if (step == 1)
+        progressBarView.hidden = NO;
+        
+        // Reset the progressBar
+        if (_progressBar.frame.origin.x == [UIScreen mainScreen].bounds.size.width && step != maxStep)
         {
             _progressBar.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, kPROGRESS_BAR_HEIGHT);
         }
         
-        progressBarView.hidden = NO;
+        CGRect newFrame;
         
         double newStep = 1 - ((float)step / (float)maxStep);
         int calculatedWidth = (int)([UIScreen mainScreen].bounds.size.width * newStep);
         
         CGRect oldFrame = _progressBar.frame;
-        CGRect newFrame = CGRectMake([UIScreen mainScreen].bounds.size.width - calculatedWidth
-                                     , oldFrame.origin.y,
-                                     [UIScreen mainScreen].bounds.size.width,
-                                     3);
+        newFrame = CGRectMake([UIScreen mainScreen].bounds.size.width - calculatedWidth
+                              , oldFrame.origin.y,
+                              [UIScreen mainScreen].bounds.size.width,
+                              3);
         
         [UIView animateWithDuration:0.75f
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
                              _progressBar.frame = newFrame;
-                         } completion:nil];
+                         } completion:^(BOOL finished){
+                             if (step == maxStep && maxStep != 0)
+                             {
+                                 _progressBar.frame = CGRectMake([UIScreen mainScreen].bounds.size.width, 0, [UIScreen mainScreen].bounds.size.width, kPROGRESS_BAR_HEIGHT);
+                             }
+                         }];
     }
 }
 
@@ -509,14 +502,6 @@
 
 #pragma mark - Button actions
 
-- (void)tappedCloseButton
-{
-    readMoreLabel.alpha = 0;
-    dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
-    [self removeFS];
-    paused = NO;
-    [self updateUI];
-}
 
 - (void)showErrorDescription
 {
@@ -528,7 +513,6 @@
     [UIView animateWithDuration:0.2f
                      animations:^{
                          readMoreLabel.alpha = 0;
-                         _statusLabel.frame = origStatusFrame;
                          self.frame = errorFrame;
                          _errorLabel.hidden = NO;}
                      completion:nil];
@@ -536,10 +520,70 @@
 
 #pragma mark - Helper methods
 
+- (void)updateStatusFrame:(NSObject<FSData> *)data
+{
+    //SUCCESS
+    if (!data.isError)
+    {
+        if (data.anImageString == nil || data.anImageString.length == 0)
+        {
+            _serviceIcon.hidden = YES;
+            CGRect frame = origStatusFrame;
+            frame.origin.x = padding;
+            _statusLabel.frame = frame;
+        }
+        else
+        {
+            _serviceIcon.hidden = NO;
+            if (![_serviceIcon.image isEqual:[UIImage imageNamed:data.anImageString]])
+            {
+                [self updateAndAnimateIcon:data.anImageString];
+            }
+            
+            _statusLabel.frame = origStatusFrame;
+        }
+    }
+    
+    //FAILURE
+    if (data.isError)
+    {
+        if (data.anImageString == nil || data.anImageString.length == 0)
+        {
+            _serviceIcon.hidden = YES;
+            CGRect frame = origStatusFrame;
+            frame.origin.x = padding;
+            frame.origin.y = -padding/5;
+            _statusLabel.frame = frame;
+        }
+        else
+        {
+            _serviceIcon.hidden = NO;
+            CGRect frame = origStatusFrame;
+            frame.origin.y = -padding/5;
+            _statusLabel.frame = frame;
+            if (![_serviceIcon.image isEqual:[UIImage imageNamed:data.anImageString]])
+            {
+                [self updateAndAnimateIcon:data.anImageString];
+            }
+        }
+    }
+}
+
+
 - (BOOL)isVisible
 {
     return self.alpha == 1 ? YES : NO;
 }
+
+
+- (void)tappedCloseButton
+{
+    dispatch_suspend(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+    [self removeFS];
+    paused = NO;
+    [self updateUI];
+}
+
 
 - (void)removeFS
 {
@@ -551,12 +595,24 @@
                          completion:^(BOOL finished){
                              self.frame = origFrame;
                              _statusLabel.text = @"";
-                             _statusLabel.frame = origStatusFrame;
                              self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.9f];
                              paused = NO;
+                             readMoreLabel.alpha = 0;
                          }];
     }
 }
+
+
+- (void)monitor
+{
+    NSLog(@"Monitor: %@", UIRunning ? @"YES" : @"NO");
+    
+    if (!UIRunning)
+    {
+        [self updateUI];
+    }
+}
+
 
 - (void)removeFromView
 {
@@ -565,9 +621,21 @@
     @synchronized (_activeServiesQueue)
     {
         [_activeServiesQueue removeAllObjects];
-        [self.toBeDisplayed removeAllObjects];
+        [_toBeDisplayed removeAllObjects];
         DLog(@"CLEARED ALL QUEUES, REMOVING FROM VIEW");
     }
+}
+
+- (void)stopService
+{
+    @synchronized (_activeServiesQueue)
+    {
+        [_activeServiesQueue removeAllObjects];
+        [_toBeDisplayed removeAllObjects];
+        DLog(@"CLEARED ALL QUEUES, REMOVING FROM VIEW");
+    }
+    
+    [_monitorTimer invalidate];
 }
 
 @end
