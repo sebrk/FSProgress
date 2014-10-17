@@ -71,6 +71,9 @@
 		9E547BAA19814F1F00B017FA /* FSServiceActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSServiceActivityView.h; sourceTree = "<group>"; };
 		9E547BAB19814F1F00B017FA /* FSServiceActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSServiceActivityView.m; sourceTree = "<group>"; };
 		9E547BB019814F4800B017FA /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		9EAAF54919F4EC9C00B7B7AE /* FSProgress_Simulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSProgress_Simulator.h; sourceTree = "<group>"; };
+		9EAAF54B19F4EC9C00B7B7AE /* FSProgress_Simulator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSProgress_Simulator.m; sourceTree = "<group>"; };
+		9EAAF55419F4EC9C00B7B7AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +93,8 @@
 			isa = PBXGroup;
 			children = (
 				9E547B8119814EE400B017FA /* FSProgress */,
+				9EAAF54819F4EC9C00B7B7AE /* FSProgress Simulator */,
+				9EAAF55219F4EC9C00B7B7AE /* FSProgress SimulatorTests */,
 				9E547B7E19814EE400B017FA /* Frameworks */,
 				9E547B7D19814EE400B017FA /* Products */,
 			);
@@ -138,6 +143,31 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		9EAAF54819F4EC9C00B7B7AE /* FSProgress Simulator */ = {
+			isa = PBXGroup;
+			children = (
+				9EAAF54919F4EC9C00B7B7AE /* FSProgress_Simulator.h */,
+				9EAAF54B19F4EC9C00B7B7AE /* FSProgress_Simulator.m */,
+			);
+			path = "FSProgress Simulator";
+			sourceTree = "<group>";
+		};
+		9EAAF55219F4EC9C00B7B7AE /* FSProgress SimulatorTests */ = {
+			isa = PBXGroup;
+			children = (
+				9EAAF55319F4EC9C00B7B7AE /* Supporting Files */,
+			);
+			path = "FSProgress SimulatorTests";
+			sourceTree = "<group>";
+		};
+		9EAAF55319F4EC9C00B7B7AE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9EAAF55419F4EC9C00B7B7AE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -181,7 +211,7 @@
 		9E547B7419814EE400B017FA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Mobiento AB";
 			};
 			buildConfigurationList = 9E547B7719814EE400B017FA /* Build configuration list for PBXProject "FSProgress" */;
@@ -259,11 +289,12 @@
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					i386,
+					x86_64,
 				);
 				CURRENT_PROJECT_VERSION = 50;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -274,11 +305,12 @@
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					i386,
+					x86_64,
 				);
 				CURRENT_PROJECT_VERSION = 50;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -287,6 +319,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					x86_64,
+				);
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -314,6 +350,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -321,6 +358,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					x86_64,
+				);
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -343,8 +384,10 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Release;
 		};
@@ -354,19 +397,20 @@
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					i386,
+					x86_64,
 				);
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/FSProgress.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FSProgress/FSProgress-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)Headers";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = "non-global";
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -376,6 +420,7 @@
 				ARCHS = (
 					"$(ARCHS_STANDARD)",
 					i386,
+					x86_64,
 				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
@@ -383,13 +428,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FSProgress/FSProgress-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)Headers";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = "non-global";
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 			};
 			name = Release;
 		};

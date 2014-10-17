@@ -30,30 +30,29 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 	return objectString;
 }
 
+
 @implementation FSOrderedDictionary
 
 @synthesize array;
 
+
 - (id)init
 {
-	return [self initWithCapacity:0];
+    self = [super init];
+    if (self != nil)
+    {
+        dictionary = [[NSMutableDictionary alloc] initWithCapacity:0];
+        array = [[FSMutableArray alloc] initWithCapacity:0];
+    }
+    return self;
 }
 
-- (id)initWithCapacity:(NSUInteger)capacity
-{
-	self = [super init];
-	if (self != nil)
-	{
-		dictionary = [[NSMutableDictionary alloc] initWithCapacity:capacity];
-		array = [[FSMutableArray alloc] initWithCapacity:capacity];
-	}
-	return self;
-}
 
 - (id)copy
 {
 	return [self mutableCopy];
 }
+
 
 - (void)setObject:(id)anObject forKey:(id)aKey
 {
@@ -66,11 +65,13 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
         [dictionary setObject:anObject forKey:aKey];
 }
 
+
 - (void)removeObjectForKey:(id)aKey
 {
 	[dictionary removeObjectForKey:aKey];
 	[array removeObject:aKey];
 }
+
 
 - (void)removeAllObjects
 {
@@ -78,15 +79,18 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
     [array removeAllObjects];
 }
 
+
 - (NSUInteger)count
 {
 	return [dictionary count];
 }
 
+
 - (id)objectForKey:(id)aKey
 {
 	return [dictionary objectForKey:aKey];
 }
+
 
 - (id)popFirstObject
 {
@@ -101,15 +105,18 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
     return nil;
 }
 
+
 - (NSEnumerator *)keyEnumerator
 {
 	return [array objectEnumerator];
 }
 
+
 - (NSEnumerator *)reverseKeyEnumerator
 {
 	return [array reverseObjectEnumerator];
 }
+
 
 - (void)insertObject:(id)anObject forKey:(id)aKey atIndex:(NSUInteger)anIndex
 {
@@ -121,10 +128,12 @@ NSString *DescriptionForObject(NSObject *object, id locale, NSUInteger indent)
 	[dictionary setObject:anObject forKey:aKey];
 }
 
+
 - (id)keyAtIndex:(NSUInteger)anIndex
 {
 	return [array objectAtIndex:anIndex];
 }
+
 
 - (NSString *)descriptionWithLocale:(id)locale indent:(NSUInteger)level
 {
