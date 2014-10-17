@@ -10,8 +10,9 @@
 #import "FSMutableArray.h"
 
 /**
- * An ordered subclass of NSMutableDictionary, much like a HashMap structure only without the hashing
+ * An ordered subclass of NSMutableDictionary, much like a HashMap structure but without the hashing
  */
+
 @interface FSOrderedDictionary : NSMutableDictionary
 {
 	NSMutableDictionary *dictionary;

@@ -7,8 +7,8 @@
 //
 
 /**
-* FSData is the protocol which input data to the FSServiceActivity is required to implement.
-*/
+ * FSData is the protocol which input data to the FSServiceActivity is required to implement.
+ */
 
 #import <Foundation/Foundation.h>
 

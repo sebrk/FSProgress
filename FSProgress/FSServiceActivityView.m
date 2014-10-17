@@ -20,7 +20,6 @@
 {
     UITapGestureRecognizer *tapGesture;
     UIImageView *progressBarView;
-    UILabel *readMoreLabel;
     
     CGRect origStatusFrame;
     CGRect origFrame;
@@ -36,6 +35,7 @@
 @property (nonatomic, strong) UIViewController *rootViewController;
 @property (nonatomic, strong) UILabel *statusLabel;
 @property (nonatomic, strong) UILabel *errorLabel;
+@property (nonatomic, strong) UILabel *readMoreLabel;
 @property (nonatomic, strong) NSDictionary *serviceNotificationMessageKeys;
 @property (nonatomic, strong) UIImageView *serviceIcon;
 @property (nonatomic, strong) UIView *progressBar;
@@ -61,6 +61,7 @@
     
     return serviceActivityIndicatorView;
 }
+
 
 - (void)setRootViewController:(UIViewController *)rootViewController andFont:(UIFont *)font
 {
@@ -100,6 +101,7 @@
         [rootViewController.view addSubview:self];
     });
 }
+
 
 #pragma mark - UI setup methods
 
@@ -146,6 +148,7 @@
     [self addSubview:_closeButton];
 }
 
+
 - (void)setupProgressBar
 {
     progressBarView = [[UIImageView alloc] initWithFrame:CGRectMake(0,
@@ -174,16 +177,17 @@
     [self addSubview:progressBarView];
 }
 
+
 - (void)setupErrorLabel:(UIFont *)font
 {
-    readMoreLabel = [[UILabel alloc] init];
-    readMoreLabel.alpha = 0;
-    readMoreLabel.font = [UIFont boldSystemFontOfSize:font.pointSize - 4.0f];
-    readMoreLabel.textColor = [UIColor whiteColor];
-    readMoreLabel.backgroundColor = [UIColor clearColor];
-    readMoreLabel.textAlignment = NSTextAlignmentLeft;
-    readMoreLabel.text = @"More info available";
-    [self addSubview:readMoreLabel];
+    _readMoreLabel = [[UILabel alloc] init];
+    _readMoreLabel.alpha = 0;
+    _readMoreLabel.font = [UIFont boldSystemFontOfSize:font.pointSize - 4.0f];
+    _readMoreLabel.textColor = [UIColor whiteColor];
+    _readMoreLabel.backgroundColor = [UIColor clearColor];
+    _readMoreLabel.textAlignment = NSTextAlignmentLeft;
+    _readMoreLabel.text = NSLocalizedStringFromTableInBundle(@"toast_moreInfo", @"global", [NSBundle mainBundle], @"More info text");
+    [self addSubview:_readMoreLabel];
     
     _errorLabel = [[UILabel alloc] initWithFrame:CGRectMake(padding,
                                                             _statusLabel.frame.origin.y + padding,
@@ -201,6 +205,7 @@
     
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showErrorDescription)];
 }
+
 
 #pragma mark - Parser
 
@@ -243,6 +248,7 @@
         }
     }
 }
+
 
 #pragma mark - FSMutableArayDelegate methods
 
@@ -308,6 +314,7 @@
         DLog(@"DEAD WORKER: %@", [NSThread currentThread]);
     });
 }
+
 
 #pragma mark - UI update methods
 
@@ -393,7 +400,7 @@
                                                  [_statusLabel addGestureRecognizer:tapGesture];
                                              }
                                              
-                                             readMoreLabel.frame = CGRectMake(_statusLabel.frame.origin.x,
+                                             _readMoreLabel.frame = CGRectMake(_statusLabel.frame.origin.x,
                                                                               _statusLabel.frame.origin.y + 1.5 * padding,
                                                                               CGRectGetWidth(self.frame) - 2 * padding,
                                                                               kSERVICE_INDICATOR_HEIGHT);
@@ -402,7 +409,7 @@
                                                                    delay:0.f
                                                                  options:UIViewAnimationOptionCurveEaseIn
                                                               animations:^{
-                                                                  readMoreLabel.alpha = 1.0f;}
+                                                                  _readMoreLabel.alpha = 1.0f;}
                                                               completion:nil];
                                          }];
                     }
@@ -464,6 +471,7 @@
     }
 }
 
+
 - (void)updateAndAnimateTitle:(NSString *)titleString
 {
     [UIView animateWithDuration:0.2f
@@ -481,6 +489,7 @@
                                           completion:nil];
                      }];
 }
+
 
 - (void)updateAndAnimateIcon:(NSString *)iconString
 {
@@ -500,8 +509,8 @@
                      }];
 }
 
-#pragma mark - Button actions
 
+#pragma mark - Button actions
 
 - (void)showErrorDescription
 {
@@ -512,11 +521,12 @@
     
     [UIView animateWithDuration:0.2f
                      animations:^{
-                         readMoreLabel.alpha = 0;
+                         _readMoreLabel.alpha = 0;
                          self.frame = errorFrame;
                          _errorLabel.hidden = NO;}
                      completion:nil];
 }
+
 
 #pragma mark - Helper methods
 
@@ -597,7 +607,7 @@
                              _statusLabel.text = @"";
                              self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.9f];
                              paused = NO;
-                             readMoreLabel.alpha = 0;
+                             _readMoreLabel.alpha = 0;
                          }];
     }
 }
@@ -605,8 +615,6 @@
 
 - (void)monitor
 {
-    NSLog(@"Monitor: %@", UIRunning ? @"YES" : @"NO");
-    
     if (!UIRunning)
     {
         [self updateUI];
