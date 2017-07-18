@@ -1,6 +1,6 @@
 # README #
 
-FSProgress is a feedback system which includes a queuing system. It handles multiple "services" intelligently. It was originally made to improve the user feedback in Volvo On Call but can be skinned and changed to work in other projects as well.
+FSProgress is a feedback system which includes a queuing system. It handles multiple "services" intelligently. It was originally made to improve the user feedback in a *unnamed world brand car manufacturer app* but can be skinned and changed to work in other projects as well.
 
 It uses GCD as a Singelton and can be messaged by sending objects that conform to the **FSData** protocol.
 
