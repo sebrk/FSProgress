@@ -11,17 +11,17 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>1E61983E63EBBE09B8E00FD864ADD30E672C07E6</key>
-		<string>ssh://bitbucket.org/mobiento/fsprogress.git</string>
+		<string>bitbucket.org:mobiento/fsprogress.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>FSProgress.xcodeproj/project.xcworkspace</string>
+	<string>FSProgress.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>1E61983E63EBBE09B8E00FD864ADD30E672C07E6</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://bitbucket.org/mobiento/fsprogress.git</string>
+	<string>bitbucket.org:mobiento/fsprogress.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

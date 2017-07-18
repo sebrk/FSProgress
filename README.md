@@ -23,5 +23,3 @@ and add it to your root view controller like so:
 ```
 
 When adding the framework to your project, make sure to also copy the Media.xcassets folder to your project as the built framework does not include the graphics itself.
-
-Original developer is Sebastian Buks <sebastian.buks@mobiento.com>
